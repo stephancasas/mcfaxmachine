@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
-	<key>KeepAlive</key>
-	<true/>
-	<key>RunAtLoad</key>
-	<true/>
-	<key>Label</key>
-	<string>com.stephancasas.mcfaxmachine</string>
-	<key>Program</key>
-	<string>/usr/local/bin/node</string>
-	<key>ProgramArguments</key>
-	<array>
-		<string>/opt/com.stephancasas.mcfaxmachine/server.js</string>
-	</array>
-	<key>StandardOutPath</key>
-	<string>/opt/com.stephancasas.mcfaxmachine/launchdOutput.log</string>
-	<key>StandardErrorPath</key>
-	<string>/opt/com.stephancasas.mcfaxmachine/launchdError.log</string>
-</dict>
+    <dict>
+        <key>KeepAlive</key>
+        <true />
+        <key>RunAtLoad</key>
+        <true />
+        <key>Label</key>
+        <string>com.stephancasas.mcfaxmachine</string>
+        <key>Program</key>
+        <string>/usr/local/bin/node</string>
+        <key>ProgramArguments</key>
+        <array>
+            <string>/usr/local/bin/node</string>
+            <string>/opt/com.stephancasas.mcfaxmachine/server.js</string>
+        </array>
+        <key>StandardOutPath</key>
+        <string>/opt/com.stephancasas.mcfaxmachine/launchdOutput.log</string>
+        <key>StandardErrorPath</key>
+        <string>/opt/com.stephancasas.mcfaxmachine/launchdError.log</string>
+    </dict>
 </plist>
