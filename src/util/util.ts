@@ -53,10 +53,14 @@ export function bodyToUtf8(mimeBody: MimeMessageBody): string {
  * @returns MimeMessageBody
  */
 export function plaintextToMimeBody(str: string): MimeMessageBody {
+  const fulltype = str.toLowerCase().includes('<html')
+    ? 'text/html'
+    : 'text/plain';
+
   return {
     _headers: {
       'Content-Type': {
-        fulltype: 'text/plain'
+        fulltype
       }
     },
     _body: `${str}`
