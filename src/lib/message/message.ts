@@ -15,6 +15,7 @@ export default class Message {
   id: string;
 
   htmlPath: string;
+  pdfPath: string;
 
   constructor(content: string) {
     this.content = content;
@@ -38,13 +39,13 @@ export default class Message {
 
   async printAsPdf() {
     const url = pathToFileURL(this.htmlPath).href;
-    const pdfPath = `${fs.realpathSync(this.htmlPath)}.pdf`;
+    this.pdfPath = `${fs.realpathSync(this.htmlPath)}.pdf`;
 
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto(url);
     await page.pdf({
-      path: pdfPath,
+      path: this.pdfPath,
       format: 'letter',
       printBackground: false,
       displayHeaderFooter: false,
@@ -53,28 +54,28 @@ export default class Message {
 
     await browser.close();
 
+    this.dispatchLpr();
+  }
+
+  dispatchLpr() {
     // use specified printer or send as default
     const printer = !!Config?.printer ? `-P "${Config.printer}" ` : '';
 
     const command = !!Config?.lprCommand
-      ? `${Config.lprCommand} ${pdfPath}`
-      : `/usr/bin/lpr ${printer}"${pdfPath}"`;
+      ? `${Config.lprCommand} ${this.pdfPath}`
+      : `/usr/bin/lpr ${printer}"${this.pdfPath}"`;
 
-    logDispatch(exec(command));
+    const { stderr } = exec(command);
+    const errBuffer = [];
+
+    stderr.on('data', (bytes) => {
+      errBuffer.push(Buffer.from(bytes));
+    });
+    stderr.on('end', () => {
+      const log = Buffer.concat(errBuffer).toString('utf-8');
+
+      if (log.trim().length > 0) logger.error(log);
+      else logger.info(`Dispatched ${this.id}.html.pdf for print.`);
+    });
   }
-}
-
-function logDispatch(dispatch: ChildProcess) {
-  const { stderr } = dispatch;
-  const errBuffer = [];
-
-  stderr.on('data', (bytes) => {
-    errBuffer.push(Buffer.from(bytes));
-  });
-  stderr.on('end', () => {
-    const log = Buffer.concat(errBuffer).toString('utf-8');
-
-    if (log.trim().length > 0) logger.error(log);
-    else logger.info(`Dispatched ${this.id}.html.pdf for print.`);
-  });
 }
