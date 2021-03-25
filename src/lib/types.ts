@@ -6,6 +6,7 @@ export interface ApplicationConfig {
   workDir: string;
   printer?: string;
   lprCommand?: string;
+  pageScale?: number;
 }
 
 interface ConnectionSettings {

@@ -32,4 +32,8 @@ export default <ApplicationConfig>{
   // OPTIONAL: specify the `lpr` command used to queue the print
   // NOTE: see details below
   // lprCommand: '/usr/bin/lpr -P "BubbleJet 3100" -o media=letter'
+
+  // OPTIONAL: specify the scale (zoom level) at which to print messages
+  // must be between 0.1 and 2
+  // pageScale: 1
 };

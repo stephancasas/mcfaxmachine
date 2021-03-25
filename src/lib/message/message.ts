@@ -47,7 +47,8 @@ export default class Message {
       path: pdfPath,
       format: 'letter',
       printBackground: false,
-      displayHeaderFooter: false
+      displayHeaderFooter: false,
+      scale: Config.pageScale ? Config.pageScale : 1
     });
 
     await browser.close();
