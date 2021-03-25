@@ -59,9 +59,17 @@ export default class Message {
       : `/usr/bin/lpr ${printer}"${pdfPath}"`;
 
     const dispatch = exec(command);
-    
+
     if (dispatch.stderr) {
-      logger.error(dispatch.stderr);
+      const buffer = [];
+
+      dispatch.stderr.on('data', (bytes) => {
+        buffer.push(Buffer.from(bytes));
+      });
+      dispatch.stderr.on('end', () => {
+        const log = Buffer.concat(buffer).toString('utf-8');
+        logger.error(log);
+      });
     } else {
       logger.info(`Dispatched ${this.id}.html.pdf for print.`);
     }
