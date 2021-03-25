@@ -8,6 +8,7 @@ import { exec } from 'child_process';
 
 import Config from '../../config/config';
 import logger from '../../util/logger';
+import { ChildProcess } from 'node:child_process';
 
 export default class Message {
   content: string;
@@ -58,20 +59,21 @@ export default class Message {
       ? `${Config.lprCommand} ${pdfPath}`
       : `/usr/bin/lpr ${printer}"${pdfPath}"`;
 
-    const dispatch = exec(command);
-
-    if (dispatch.stderr) {
-      const buffer = [];
-
-      dispatch.stderr.on('data', (bytes) => {
-        buffer.push(Buffer.from(bytes));
-      });
-      dispatch.stderr.on('end', () => {
-        const log = Buffer.concat(buffer).toString('utf-8');
-        logger.error(log);
-      });
-    } else {
-      logger.info(`Dispatched ${this.id}.html.pdf for print.`);
-    }
+    logDispatch(exec(command));
   }
+}
+
+function logDispatch(dispatch: ChildProcess) {
+  const { stderr } = dispatch;
+  const errBuffer = [];
+
+  stderr.on('data', (bytes) => {
+    errBuffer.push(Buffer.from(bytes));
+  });
+  stderr.on('end', () => {
+    const log = Buffer.concat(errBuffer).toString('utf-8');
+
+    if (log.trim().length > 0) logger.error(log);
+    else logger.info(`Dispatched ${this.id}.html.pdf for print.`);
+  });
 }
